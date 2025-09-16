@@ -1,6 +1,7 @@
 import { FileText } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ModeToggle } from "./theme-provider"
+import Link from "next/link"
 
 export function Header()  {
     return (
@@ -22,9 +23,11 @@ export function Header()  {
           </nav>
           <div className="flex gap-4">
             <ModeToggle />
-            <Button variant="outline" className="hidden md:inline-flex bg-transparent">
-              Sign In
-            </Button>
+            <Link href="/signin">
+              <Button variant="outline" className="hidden md:inline-flex bg-transparent">
+                Sign In
+              </Button>
+            </Link>
           </div>
         </div>
       </header>
