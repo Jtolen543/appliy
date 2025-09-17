@@ -47,7 +47,6 @@ export default function SignInPage() {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        {/* Header */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center space-x-2 mb-6">
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
@@ -59,7 +58,6 @@ export default function SignInPage() {
           <p className="text-muted-foreground">Sign in to your account to continue creating amazing cover letters</p>
         </div>
 
-        {/* Sign In Form */}
         <Card className="bg-card border-border">
           <CardHeader className="space-y-1">
             <CardTitle className="text-xl text-card-foreground">Sign in</CardTitle>
