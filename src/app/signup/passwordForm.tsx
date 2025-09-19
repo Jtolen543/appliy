@@ -14,15 +14,12 @@ export const PasswordSignUpForm = () => {
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [username, setUsername] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
-
-  const formSchema = z.object({
-    username: z.string().min(2).max(50),
-  })
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -41,23 +38,23 @@ export const PasswordSignUpForm = () => {
       return
     }
 
-    try {
-      const result = await authClient.signUp.email({
-        email,
-        password,
-        name,
-      })
-
-      if (result.error) {
-        toast.error(result.error.message || "Failed to create account")
-      } else {
-        router.push("")
+    await authClient.signUp.email({
+      email,
+      password,
+      name,
+      username,
+      displayUsername: username,
+      fetchOptions: {
+        onSuccess: () => {
+          router.push("/")
+        },
+        onError: (ctx) => {
+          toast.error(ctx.error.message || "Failed to create account")
+        }
       }
-    } catch (err) {
-      toast.error("An unexpected error occurred")
-    } finally {
-      setIsLoading(false)
-    }
+    })
+    toast.info("A verification link has been sent to the provided email")
+    setIsLoading(false)
   }
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -86,6 +83,21 @@ export const PasswordSignUpForm = () => {
           placeholder="Enter your email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          required
+          className="bg-input border-border"
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="username" className="text-sm font-medium">
+          Username
+        </Label>
+        <Input
+          id="username"
+          type="username"
+          placeholder="Enter your username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
           required
           className="bg-input border-border"
         />

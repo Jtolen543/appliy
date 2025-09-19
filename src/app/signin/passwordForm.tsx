@@ -19,22 +19,19 @@ export const PasswordSignInForm = () => {
     e.preventDefault()
     setIsLoading(true)
 
-    try {
       const result = await authClient.signIn.email({
         email,
         password,
+        fetchOptions: {
+          onSuccess: () => {
+            toast.success("You are now logged in!")
+          },
+          onError: (ctx) => {
+            toast.error(ctx.error.message)
+          }
+        }
       })
-
-      if (result.error) {
-        toast.error(result.error.message || "Failed to sign in")
-      } else {
-        router.push("/dashboard")
-      }
-    } catch (err) {
-      toast.error("An unexpected error occurred")
-    } finally {
       setIsLoading(false)
-    }
   }
     return (
       <form onSubmit={handleSubmit} className="space-y-4">
