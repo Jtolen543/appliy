@@ -23,8 +23,15 @@ export const PasswordSignInForm = () => {
         email,
         password,
         fetchOptions: {
-          onSuccess: () => {
-            toast.success("You are now logged in!")
+          onSuccess: async (ctx) => {
+            console.log(ctx)
+            if (ctx.data.twoFactorRedirect) {
+              await authClient.twoFactor.sendOtp()
+              toast.info("Redirecting to OTP")
+              return
+            }
+            toast.success("Successfully signed in")
+            router.push("/")
           },
           onError: (ctx) => {
             toast.error(ctx.error.message)

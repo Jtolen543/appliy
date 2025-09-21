@@ -4,10 +4,28 @@ import { FileText } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ModeToggle } from "./theme-provider"
 import { authClient } from "@/lib/auth-client"
+import { toast } from "sonner"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 
-export function Header()  {
+export function Header() {
   const session = authClient.useSession()
+  const router = useRouter()
+
+  const logout = async () => {
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          toast.success("Signed out of current session")
+          router.push("/")
+        },
+        onError: (ctx) => {
+          toast.error(ctx.error.message || "Failed to sign out")
+        }
+      }
+    })
+  }
+
   return (
     <header className="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
@@ -27,11 +45,33 @@ export function Header()  {
         </nav>
         <div className="flex gap-4">
           <ModeToggle />
-          <Link href="/signin">
-            <Button variant="outline" className="hidden md:inline-flex bg-transparent">
-              Sign In
-            </Button>
-          </Link>
+          
+            {session.data && session.data.user
+            ?
+              <div className="flex gap-4">
+                <Link href="/profile">
+                  <Button variant="outline" className="hidden md:inline-flex bg-transparent">
+                    Profile
+                  </Button>
+                </Link>
+                <Button variant="outline" className="hidden md:inline-flex bg-transparent" onClick={logout}>
+                  Sign Out
+                </Button>
+              </div>
+            :
+              <div className="flex gap-4">
+                <Link href="/signin">
+                  <Button variant="outline" className="hidden md:inline-flex bg-transparent">
+                    Sign In
+                  </Button>
+                </Link>
+                <Link href="/signup">
+                  <Button variant="outline" className="hidden md:inline-flex bg-transparent">
+                    Sign Up
+                  </Button>
+                </Link>
+              </div>
+            }
         </div>
       </div>
     </header>

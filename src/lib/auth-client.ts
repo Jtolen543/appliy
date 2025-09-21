@@ -8,7 +8,11 @@ export const authClient = createAuthClient({
     secret: process.env.BETTER_AUTH_SECRET,
     plugins: [
         usernameClient(),
-        twoFactorClient(),
+        twoFactorClient({
+            onTwoFactorRedirect() {
+                window.location.href = "/2FA"
+            },
+        }),
         emailOTPClient()
     ]
 })
