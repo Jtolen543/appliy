@@ -1,5 +1,5 @@
 import { createAuthClient } from "better-auth/react"
-import { usernameClient } from "better-auth/client/plugins"
+import { usernameClient, twoFactorClient, emailOTPClient } from "better-auth/client/plugins"
 
 export const authClient = createAuthClient({
     // This will resolve to the below even if removed, but here for clarify
@@ -7,6 +7,8 @@ export const authClient = createAuthClient({
     basePath: "/api/auth",
     secret: process.env.BETTER_AUTH_SECRET,
     plugins: [
-        usernameClient()
+        usernameClient(),
+        twoFactorClient(),
+        emailOTPClient()
     ]
 })

@@ -1,18 +1,14 @@
 import { Body, Container, Head, Heading, Html, Img, Preview, Section, Text } from "@react-email/components"
 
-interface OtpVerificationProps {
-  userFirstname?: string
-  otp?: string
-}
 
-export const OtpVerification = ({ userFirstname = "User", otp = "12345678" }: OtpVerificationProps) => (
+export const OtpVerification = (otp: string) => (
   <Html>
     <Head />
     <Preview>Your verification code: {otp}</Preview>
     <Body style={main}>
       <Container style={container}>
         <Heading style={h1}>Your verification code</Heading>
-        <Text style={heroText}>Hi {userFirstname}, here's your verification code to complete your action:</Text>
+        <Text style={heroText}>Hello, here's your verification code to complete your action:</Text>
         <Section style={otpContainer}>
           <Text style={otpText}>{otp}</Text>
         </Section>

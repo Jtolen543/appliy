@@ -8,7 +8,6 @@ import { Label } from "@/components/ui/label"
 import { Eye, EyeOff, Loader2 } from "lucide-react"
 import { authClient } from "@/lib/auth-client"
 import { toast } from "sonner"
-import { z } from "zod"
 
 export const PasswordSignUpForm = () => {
   const [name, setName] = useState("")

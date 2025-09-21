@@ -1,13 +1,12 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { username, emailOTP } from "better-auth/plugins";
-import { db, schemas } from "@/db"; 
+import { username, emailOTP, twoFactor } from "better-auth/plugins";
+import { db } from "@/db"; 
 import { verificationEmail } from "./resend/password";
 
 export const auth = betterAuth({
     database: drizzleAdapter(db, {
         provider: "pg",
-        schema: schemas
     }),
     emailAndPassword: {
         enabled: true,
@@ -15,7 +14,7 @@ export const auth = betterAuth({
     },
     emailVerification: {
       sendVerificationEmail: async ({user, url, token}, request) => {
-        const data = await verificationEmail(user, url, token)
+        const data = await verificationEmail(user, url)
       },
       sendOnSignUp: true,
       autoSignInAfterVerification: true
@@ -37,15 +36,12 @@ export const auth = betterAuth({
     plugins: [
         username(),
         emailOTP({
+            otpLength: 8,
+            expiresIn: 300,
             async sendVerificationOTP({email, otp, type}) {
-                if (type == "sign-in") {
-
-                } else if (type === "email-verification") {
-
-                } else {
-
-                }
+                
             },
-        })
+        }),
+        twoFactor()
     ]
 });
