@@ -13,7 +13,6 @@ export const PasswordSignUpForm = () => {
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [username, setUsername] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
@@ -23,7 +22,6 @@ export const PasswordSignUpForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
-
 
     if (password !== confirmPassword) {
       toast.error("Passwords do not match")
@@ -41,8 +39,6 @@ export const PasswordSignUpForm = () => {
       email,
       password,
       name,
-      username,
-      displayUsername: username,
       fetchOptions: {
         onSuccess: () => {
           router.push("/")
@@ -86,22 +82,6 @@ export const PasswordSignUpForm = () => {
           className="bg-input border-border"
         />
       </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="username" className="text-sm font-medium">
-          Username
-        </Label>
-        <Input
-          id="username"
-          type="username"
-          placeholder="Enter your username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          required
-          className="bg-input border-border"
-        />
-      </div>
-
       <div className="space-y-2">
         <Label htmlFor="password" className="text-sm font-medium">
           Password

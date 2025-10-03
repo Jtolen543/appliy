@@ -19,7 +19,7 @@ export const PasswordSignInForm = () => {
     e.preventDefault()
     setIsLoading(true)
 
-      const result = await authClient.signIn.email({
+      await authClient.signIn.email({
         email,
         password,
         fetchOptions: {

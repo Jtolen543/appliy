@@ -4,8 +4,8 @@ import type React from "react"
 import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { FileText } from "lucide-react"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { PasswordSignUpForm } from "./passwordForm"
+import { SocialSignupForm } from "./socialForm"
 
 export default function SignUpPage() {
   return (
@@ -25,18 +25,12 @@ export default function SignUpPage() {
         <Card className="bg-card border-border">
           <CardHeader className="space-y-1">
             <CardTitle className="text-xl text-card-foreground">Sign Up</CardTitle>
-            <CardDescription>Sign up with any of the following methods below</CardDescription>
+            <CardDescription>Sign into your account to continue</CardDescription>
           </CardHeader>
           <CardContent>
-            <Tabs defaultValue="password">
-              <TabsList className="flex w-full justify-center">
-                <TabsTrigger value="password">Password</TabsTrigger>
-                <TabsTrigger value="oauth">Social</TabsTrigger>
-                <TabsTrigger value="phone">Phone Number</TabsTrigger>
-                <TabsTrigger value="passkey">Passkey</TabsTrigger>
-              </TabsList>
-              <TabsContent value="password"><PasswordSignUpForm /></TabsContent>
-            </Tabs>
+              <SocialSignupForm />
+              <CardDescription className="pb-4">Or sign up with email</CardDescription>
+              <PasswordSignUpForm />
             <div className="mt-6 text-center">
               <div className="text-sm text-muted-foreground">
                 Already have an account?{" "}

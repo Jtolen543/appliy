@@ -1,11 +1,17 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { username, emailOTP, twoFactor } from "better-auth/plugins";
+import {emailOTP, twoFactor, phoneNumber, } from "better-auth/plugins";
+import { passkey } from "better-auth/plugins/passkey";
 import { db } from "@/db"; 
 import * as schema from "@/db/auth"
 import { verificationEmail, otpEmail } from "./resend/password";
 
 export const auth = betterAuth({
+    account: {
+        accountLinking: {
+            enabled: true
+        }
+    },
     database: drizzleAdapter(db, {
         provider: "pg",
         schema
@@ -36,7 +42,7 @@ export const auth = betterAuth({
         },
     },
     plugins: [
-        username(),
+        phoneNumber(),
         emailOTP({
             otpLength: 8,
             expiresIn: 300,
@@ -52,6 +58,7 @@ export const auth = betterAuth({
                 },
                 
             }
-        })
+        }),
+        passkey()
     ]
 });
