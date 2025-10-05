@@ -28,6 +28,7 @@ export const SocialSignupForm = () => {
         }
       }
     })
+    setSelected("")
     setLoading(false)
   }
 

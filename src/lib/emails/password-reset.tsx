@@ -12,15 +12,8 @@ import {
   Text,
 } from "@react-email/components"
 
-interface PasswordResetProps {
-  userFirstname?: string
-  resetUrl?: string
-}
 
-export const PasswordReset = ({
-  userFirstname = "User",
-  resetUrl = "https://example.com/reset-password",
-}: PasswordResetProps) => (
+export const PasswordReset = (url: string) => (
   <Html>
     <Head />
     <Preview>Reset your password</Preview>
@@ -28,11 +21,10 @@ export const PasswordReset = ({
       <Container style={container}>
         <Heading style={h1}>Reset your password</Heading>
         <Text style={heroText}>
-          Hi {userFirstname}, we received a request to reset your password. Click the button below to create a new
-          password.
+          Hi, we received a request to reset your password. Click the button below to create a new password.
         </Text>
         <Section style={buttonContainer}>
-          <Button style={button} href={resetUrl}>
+          <Button style={button} href={url}>
             Reset Password
           </Button>
         </Section>
@@ -42,8 +34,8 @@ export const PasswordReset = ({
         </Text>
         <Text style={text}>
           Or copy and paste this URL into your browser:{" "}
-          <Link href={resetUrl} style={link}>
-            {resetUrl}
+          <Link href={url} style={link}>
+            {url}
           </Link>
         </Text>
         <Section style={footerContainer}>

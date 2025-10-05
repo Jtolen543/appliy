@@ -6,8 +6,10 @@ import { Button } from "@/components/ui/button"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faDiscord, faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons"
 import { faMobileScreenButton, faTabletScreenButton, faComputer, faTv, faKey } from "@fortawesome/free-solid-svg-icons"
+import { PasskeyForm } from "./passkeyForm"
 import { authClient } from "@/lib/auth-client"
 import { TabsComponentProps } from "./page"
+import { PasswordForm } from "./passwordForm"
 import { toast } from "sonner"
 
 function formatTimeElapsed(createdAt: Date): string {
@@ -16,15 +18,15 @@ function formatTimeElapsed(createdAt: Date): string {
   const minutes = Math.floor(seconds / 60) 
   if (minutes < 60) return `${minutes} minute${minutes !== 1 ? "s" : ""} ago`;
   const hours = Math.floor(minutes / 60)
-  if (hours < 60) return `${hours} hour${hours !== 1 ? "s" : ""} ago`;
-  const days = Math.floor(minutes / 60)
+  if (hours < 24) return `${hours} hour${hours !== 1 ? "s" : ""} ago`;
+  const days = Math.floor(hours / 24)
   return `${days} day${days !== 1 ? "s" : ""} ago`;
 }
 
 export const MainDetails = ({data}: TabsComponentProps) => {
+
   const providerList = data.accounts.map((account) => account.providerId)
-  const sessions = data.sessions.sort((a, b) => (a.current ? -1 : 0) - (b.current ? 1 : 0))
-  
+  const sessions = data.sessions.sort((a, b) => (a.current ? -1 : 0) - (b.current ? -1 : 0))
   const socialsList = [
     {provider: "Google", icon: faGoogle, connected: providerList.includes("google")},
     {provider: "Github", icon: faGithub, connected: providerList.includes("github")},
@@ -78,6 +80,21 @@ export const MainDetails = ({data}: TabsComponentProps) => {
     })
   }
 
+  async function removePasskey(id: string) {
+    await authClient.passkey.deletePasskey({
+      id,
+      fetchOptions: {
+        onSuccess: (ctx) => {
+          toast.info(`Successfully removed passkey`)
+          data.refetch()
+        },
+        onError: (ctx) => {
+          toast.error("Failed to remove passkey")
+        }
+      }
+    })
+  }
+
   return (
     <div className="flex flex-col pt-4 gap-8">
       <Card>
@@ -103,9 +120,12 @@ export const MainDetails = ({data}: TabsComponentProps) => {
             <Label htmlFor="email">Email</Label>
             <Input id="email" type="email" placeholder="john.doe@example.com" />
           </div>
-          <div className="flex justify-end gap-4">
-            <Button variant="outline">Cancel</Button>
-            <Button>Save Changes</Button>
+          <div className="flex justify-between gap-4">
+            <PasswordForm data={data}/>
+            <div className="flex gap-4">
+              <Button variant="outline">Cancel</Button>
+              <Button>Save Changes</Button>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -144,24 +164,22 @@ export const MainDetails = ({data}: TabsComponentProps) => {
               <FontAwesomeIcon icon={faKey} />
               <span className="text-sm font-medium">Passkeys [{data.passkeys.length}]</span>
             </div>
-            <Button variant="outline" size="sm">
-              <FontAwesomeIcon icon={faKey} />
-              Add New Passkey
-            </Button>
+            <PasskeyForm data={data}></PasskeyForm>
           </div>
-
-          <div className="flex items-center justify-between p-4 border rounded-lg border-border">
-            <div className="flex items-center gap-3">
-              <FontAwesomeIcon icon={faKey} />
-              <div>
-                <p className="font-medium">MacBook Pro</p>
-                <p className="text-sm text-muted-foreground">Added on Jan 15, 2025</p>
+          {data.passkeys.map((passkey) => (
+            <div className="flex items-center justify-between p-4 border rounded-lg border-border">
+              <div className="flex items-center gap-3">
+                <FontAwesomeIcon icon={faKey} />
+                <div>
+                  <p className="font-medium">{passkey.name}</p>
+                  <p className="text-sm text-muted-foreground">Added on {passkey.createdAt.toLocaleDateString("en-us", {day: "numeric", month: "long", year: "numeric"})}</p>
+                </div>
               </div>
+              <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive" onClick={() => removePasskey(passkey.id)}>
+                Remove
+              </Button>
             </div>
-            <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive">
-              Remove
-            </Button>
-          </div>
+          ))}
         </CardContent>
       </Card>
 

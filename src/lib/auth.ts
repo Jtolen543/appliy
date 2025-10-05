@@ -1,10 +1,10 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import {emailOTP, twoFactor, phoneNumber, } from "better-auth/plugins";
+import { emailOTP, twoFactor, phoneNumber } from "better-auth/plugins";
 import { passkey } from "better-auth/plugins/passkey";
 import { db } from "@/db"; 
 import * as schema from "@/db/auth"
-import { verificationEmail, otpEmail } from "./resend/password";
+import { verificationEmail, otpEmail, resetPassword } from "./resend/password";
 
 export const auth = betterAuth({
     account: {
@@ -18,11 +18,17 @@ export const auth = betterAuth({
     }),
     emailAndPassword: {
         enabled: true,
-        requireEmailVerification: true
+        requireEmailVerification: true,
+        sendResetPassword: async ({user, url, token}, request) => {
+            await resetPassword(user.email, url)
+        },
+        onPasswordReset: async ({ user }, request) => {
+            console.log(`Password for user ${user.email} has been reset.`);
+        },
     },
     emailVerification: {
       sendVerificationEmail: async ({user, url, token}, request) => {
-        const data = await verificationEmail(user, url)
+        await verificationEmail(user, url)
       },
       sendOnSignUp: true,
       autoSignInAfterVerification: true
